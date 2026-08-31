@@ -1,0 +1,7 @@
+# Exclude build files and cache directories from pub.dev packaging
+build/
+.dart_tool/
+.idea/
+.vscode/
+*.iml
+.DS_Store
