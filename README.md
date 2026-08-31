@@ -20,7 +20,7 @@ In Flutter Web development, persisting user inputs, app configurations, and navi
 
 ### Comparison: flutter_web_storage vs. Alternatives
 
-| Feature / Metric | shared_preferences | Hive | flutter_web_storage |
+| Feature / Metric | Standard Async Storage (e.g. shared_preferences) | NoSQL Document DBs (e.g. Hive) | flutter_web_storage |
 |---|---|---|---|
 | **API Synchronicity** | Asynchronous (Future-based) | Asynchronous (Future-based init/write) | Synchronous (Direct JS-Interop) |
 | **Startup UI Flicker** | High (Requires loading screens/builders) | High (Requires box open futures) | Zero (Instant hydration in constructor) |
@@ -28,13 +28,13 @@ In Flutter Web development, persisting user inputs, app configurations, and navi
 | **WASM Compatibility** | Mixed (Legacy JS dependency chains) | Poor (Requires custom indexedDB binaries) | Native (package:web + dart:js_interop) |
 | **Platform Portability** | Fallback to disk (Plugin dependent) | Fallback to disk (Requires path provider) | Fallback to in-memory stub (Zero dependencies) |
 
-### 1. The Startup UI Flicker Problem (shared_preferences)
-When a user refreshes a web page (F5), standard Flutter code initializes state variables to their defaults. Because shared_preferences relies on asynchronous read operations (Future<SharedPreferences>), the UI is drawn with default values before the stored value is retrieved. This latency results in a visible UI flash or flicker.
+### 1. The Startup UI Flicker Problem (Standard Async Storage)
+When a user refreshes a web page (F5), standard Flutter code initializes state variables to their defaults. Because standard asynchronous storage utilities (such as shared_preferences) rely on asynchronous read operations, the UI is drawn with default values before the stored value is retrieved. This latency results in a visible UI flash or flicker.
 
 flutter_web_storage solves this by using synchronous Dart-JS interop bindings. Since read operations map directly to synchronous browser API calls (window.localStorage.getItem), the state hydrates instantly inside the constructor or initState, bypassing asynchronous microtasks.
 
-### 2. Over-engineering and Setup Overhead (Hive)
-Hive is a database engine but introduces complexity for basic key-value storage. It requires asynchronous path registration, database initialization, and code-generation configurations (build_runner) for custom models. Running database engines on WebAssembly targets requires separate database setups.
+### 2. Over-engineering and Setup Overhead (NoSQL Document DBs)
+Standard NoSQL engines (such as Hive) are powerful database engines but introduce complexity for basic key-value storage. They require asynchronous path registration, database initialization, and code-generation configurations (build_runner) for custom models. Running database engines on WebAssembly targets requires separate database setups.
 
 flutter_web_storage provides lightweight, codegen-free JSON serialization, allowing direct storage of maps and lists without setup routines.
 
@@ -353,6 +353,13 @@ void initState() {
   );
 }
 ```
+
+## Author
+
+Developed and maintained by **Muhammad Omar**.
+
+* Website: [momarkhan.com](https://momarkhan.com)
+* LinkedIn: [Muhammad Omar](https://www.linkedin.com/in/muhammad-omar-0335/)
 
 ---
 
