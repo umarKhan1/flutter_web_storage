@@ -371,6 +371,22 @@ Developed and maintained by **Muhammad Omar**.
 
 ---
 
+## Contributions
+
+Contributions are welcome! If you find a bug, have a feature request, or want to contribute code, please follow these steps:
+
+1. **Issues**: Open an issue on GitHub to discuss bugs or feature suggestions.
+2. **Pull Requests**:
+   - Fork the repository.
+   - Create a feature branch (`git checkout -b feature/amazing-feature`).
+   - Run `flutter analyze` to ensure no lint warnings or compilation errors exist.
+   - Run `flutter test` to verify that all unit and widget tests pass.
+   - Commit your changes (`git commit -m 'Add amazing feature'`).
+   - Push to the branch (`git push origin feature/amazing-feature`).
+   - Open a Pull Request on the main repository.
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
