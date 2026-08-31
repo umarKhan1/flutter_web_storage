@@ -1,6 +1,6 @@
 name: flutter_web_storage
-description: A production-grade, WASM-ready, multiplatform-safe Flutter package for local and session storage with synchronous hydration, reactive streams, route preservation, and reload-safe UI controllers.
-version: 1.0.0
+description: A production-grade, WASM-ready Flutter storage package with synchronous hydration, reactive streams, route preservation, and reload-safe UI controllers.
+version: 1.0.1
 homepage: https://github.com/umarKhan1/flutter_web_storage
 
 environment:

@@ -51,38 +51,32 @@ Standard shared storage libraries only write to permanent browser storage. flutt
 
 ---
 
-## Architectural Flow Diagrams
+## Architectural Flow
 
 ### Data Hydration Flow (Zero-Flicker)
 
-```mermaid
-sequenceDiagram
-    participant UI as Flutter Widget (UI)
-    participant Core as FlutterWebStorage Singleton
-    participant Platform as StoragePlatform (Interface)
-    participant Driver as StorageWeb (JS-Interop)
-    participant Browser as Browser Storage Engine
-
-    UI->>Core: Hydrate state (initState)
-    Core->>Platform: getItem(key, area)
-    Platform->>Driver: getItem(key, area)
-    Driver->>Browser: window.localStorage.getItem(key)
-    Browser-->>Driver: Return value (Synchronous)
-    Driver-->>Platform: Return value (Synchronous)
-    Platform-->>Core: Return value (Synchronous)
-    Core-->>UI: Return value (Instant state assignment)
-    Note over UI: Widget builds with persisted value. No loading spinner.
+```text
+[Flutter Widget (UI)] --(1. Hydrate state)--> [FlutterWebStorage Singleton]
+                                                     |
+                                            (2. Synchronous read)
+                                                     v
+[Browser Storage Engine] <--(3. Direct JS-Interop)--> [Storage Driver]
 ```
 
 ### Multiplatform Target Resolution
 
-```mermaid
-graph TD
-    A[App Compilation] --> B{Platform Target}
-    B -->|Web / WASM compiler| C[storage_web.dart loaded]
-    B -->|Native iOS / Android / Desktop| D[storage_stub.dart loaded]
-    C --> E[Browser storage APIs]
-    D --> F[In-memory Map fallback]
+```text
+                      [Compilation Target]
+                               |
+              +----------------+----------------+
+              |                                 |
+              v                                 v
+         [Web Platform]                 [Native Platforms]
+              |                                 |
+     (Loads storage_web.dart)          (Loads storage_stub.dart)
+              |                                 |
+              v                                 v
+    [Browser Storage Engine]          [In-Memory Map Fallback]
 ```
 
 ---
