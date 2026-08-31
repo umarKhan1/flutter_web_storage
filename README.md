@@ -18,44 +18,9 @@ A production-grade, **WASM-Ready**, and **Multiplatform-Safe** Flutter package f
 
 ---
 
-## GIF Showcase & Recording Guide (For pub.dev)
+## Showcase
 
-The package includes an interactive playground app under `example/`. Here is how you can record the perfect showcase GIFs for your project description:
-
-### 🎥 GIF 1: Unfinished Input Caching (SessionStorage)
-- **What it demonstrates**: `ReloadSafeTextEditingController` caching text characters mid-typing.
-- **How to record**: 
-  1. Go to Card 1 in the demo.
-  2. Type some text (e.g., `"Checking F5 persistence..."`).
-  3. Reload the browser (F5) mid-typing.
-  4. Notice how the cursor and text recover instantly on restart without reset.
-
-### 🎥 GIF 2: Primitives Persistence (LocalStorage)
-- **What it demonstrates**: Synchronous reading/writing of standard types (`int` and `bool`).
-- **How to record**:
-  1. Go to Card 2.
-  2. Click the `+` button multiple times to increase the counter.
-  3. Toggle the "Boolean Flag State" switch to active.
-  4. Hit refresh (F5).
-  5. The values remain intact.
-
-### 🎥 GIF 3: Cross-Tab Reactive Sync Stream
-- **What it demonstrates**: Live streaming updates across window contexts using `watchString`.
-- **How to record**:
-  1. Open the example app in two separate browser windows side-by-side.
-  2. In Window A, type into the text field in Card 1.
-  3. Look at Card 5 ("Reactive Stream") in Window B.
-  4. Notice the value updating in real-time in Window B as you type in Window A!
-
-### 🎥 GIF 4: Deep Link / Route Preservation (F5 Test)
-- **What it demonstrates**: Retaining route history across page reloads.
-- **How to record**:
-  1. Scroll to Card 6.
-  2. Click "Go to /subpage".
-  3. Once on the subpage, reload (F5) the browser.
-  4. Notice the app boots directly back onto `/subpage` instead of jumping back to the home route.
-
----
+![Showcase Demo](assets/webstorage.gif)
 
 ## Installation
 

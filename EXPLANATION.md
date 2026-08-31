@@ -79,26 +79,9 @@ Standard browser storage APIs (`localStorage` and `sessionStorage`) operate insi
 
 ---
 
-## Showcase GIFs Explanation
+## Showcase
 
-The example application demonstrates three core UX features that are perfect for capturing in demonstration GIFs:
-
-### 1. Side-by-Side Input Survival (GIF 1)
-- **Visual Setup**: A split view containing two input fields. The left input uses a standard `TextEditingController`. The right input uses `ReloadSafeTextEditingController`.
-- **Action**: Type the word "Validation" in both fields, then press F5 to reload the browser.
-- **Outcome**: The left field resets to empty. The right field retains "Validation" and keeps the text cursor focus intact.
-
-### 2. Primitives State Recovery (GIF 2)
-- **Visual Setup**: A red column (Without Web Storage) and a green column (With Web Storage) containing a counter and a toggle switch.
-- **Action**: Increment both counters to 5, toggle both switches to active, and reload the browser.
-- **Outcome**: The red column values reset to 0 and inactive. The green column values persist.
-
-### 3. Deep Link Preservation (GIF 3)
-- **Visual Setup**: The user navigates to `/subpage` using the router button.
-- **Action**: Hit refresh (F5) while on the subpage.
-- **Outcome**: The application reboots directly onto the subpage instead of kicking the user back to the home route.
-
----
+![Showcase Demo](assets/webstorage.gif)
 
 ## Detailed Function and API Reference
 
