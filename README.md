@@ -14,31 +14,39 @@ A production-grade, WASM-Ready, and Multiplatform-Safe Flutter package for acces
 
 ---
 
-## The Problem Solved by flutter_web_storage
+## Core Architecture and Design Philosophy
 
-In Flutter Web development, persisting user inputs, app configurations, and navigation states across browser reloads is a common requirement. While there are several storage solutions in the Flutter ecosystem, they present critical limitations when targeted at the web platform.
+In the Flutter ecosystem, different storage packages are designed for different optimal use cases. Understanding their trade-offs helps select the right tool for the web platform:
 
-### Comparison: flutter_web_storage vs. Alternatives
+1. **Standard Asynchronous Storage (e.g. SharedPreferences)**: Designed for simple key-value settings. On mobile, it writes to disk asynchronously, which is ideal for native threads. On web, the asynchronous initialization can cause the UI to build before the state is recovered, resulting in a visible layout flicker.
+2. **Encrypted Key-Value Storage (e.g. Secure Storage)**: Designed for sensitive tokens. It binds to native device keychains (like iOS Keychain and Android Keystore). On web, since there is no native hardware security keychain, it falls back to unencrypted storage or WebCrypto, which operates asynchronously and cannot prevent access from malicious scripts running on the same origin.
+3. **Relational and Object Databases (e.g. SQLite, Isar, ObjectBox)**: Designed for complex querying, massive datasets, and relations. On web, they run on IndexedDB or custom WASM compilations. While excellent for offline-first data, they carry substantial bundle size overhead and are complex for simple tab-scoped session caching.
+4. **flutter_web_storage**: Optimized specifically for **instant, tab-isolated, zero-flicker key-value state hydration on the web** using direct synchronous JS-Interop.
 
-| Feature / Metric | Standard Async Storage (e.g. shared_preferences) | NoSQL Document DBs (e.g. Hive) | flutter_web_storage |
-|---|---|---|---|
-| **API Synchronicity** | Asynchronous (Future-based) | Asynchronous (Future-based init/write) | Synchronous (Direct JS-Interop) |
-| **Startup UI Flicker** | High (Requires loading screens/builders) | High (Requires box open futures) | Zero (Instant hydration in constructor) |
-| **Tab-Scoped Caching** | Not supported (Permanent local storage only) | Not supported (Permanent local storage only) | Native support (sessionStorage) |
-| **WASM Compatibility** | Mixed (Legacy JS dependency chains) | Poor (Requires custom indexedDB binaries) | Native (package:web + dart:js_interop) |
-| **Platform Portability** | Fallback to disk (Plugin dependent) | Fallback to disk (Requires path provider) | Fallback to in-memory stub (Zero dependencies) |
+### Technical Comparison Matrix
 
-### 1. The Startup UI Flicker Problem (Standard Async Storage)
-When a user refreshes a web page (F5), standard Flutter code initializes state variables to their defaults. Because standard asynchronous storage utilities (such as shared_preferences) rely on asynchronous read operations, the UI is drawn with default values before the stored value is retrieved. This latency results in a visible UI flash or flicker.
+| Feature / Metric | Standard Async Storage | Encrypted Key-Value | Relational & Object DBs | flutter_web_storage |
+|---|---|---|---|---|
+| **Primary Use Case** | Basic key-value settings | Secure credentials | Heavy relational datasets | Web state persistence |
+| **API Synchronicity** | Asynchronous (Future) | Asynchronous (Future) | Asynchronous (Future/Stream) | Synchronous (JS-Interop) |
+| **Startup UI Flicker** | High | High | High | Zero (Instant hydration) |
+| **Tab Isolation** | No | No | No | Yes (sessionStorage) |
+| **WASM Performance** | Standard bridge | Crypto overhead | Heavy WASM engine | Native interop (zero cost) |
+| **Native Portability** | Disk serialization | Keychain integration | Native binary engine | In-memory fallback stub |
+
+### Technical Trade-Off Explanations
+
+#### 1. The Startup UI Flicker Problem
+When a user refreshes a web page (F5), standard Flutter code initializes state variables to their defaults. Because standard asynchronous storage utilities rely on asynchronous read operations, the UI is drawn with default values before the stored value is retrieved. This latency results in a visible UI flash or flicker. 
 
 flutter_web_storage solves this by using synchronous Dart-JS interop bindings. Since read operations map directly to synchronous browser API calls (window.localStorage.getItem), the state hydrates instantly inside the constructor or initState, bypassing asynchronous microtasks.
 
-### 2. Over-engineering and Setup Overhead (NoSQL Document DBs)
-Standard NoSQL engines (such as Hive) are powerful database engines but introduce complexity for basic key-value storage. They require asynchronous path registration, database initialization, and code-generation configurations (build_runner) for custom models. Running database engines on WebAssembly targets requires separate database setups.
+#### 2. Over-engineering and Setup Overhead
+Standard relational/object databases are powerful database engines but introduce complexity for basic key-value storage. They require asynchronous path registration, database initialization, and code-generation configurations for custom models. 
 
 flutter_web_storage provides lightweight, codegen-free JSON serialization, allowing direct storage of maps and lists without setup routines.
 
-### 3. Session Isolation
+#### 3. Session Isolation
 Standard shared storage libraries only write to permanent browser storage. flutter_web_storage natively separates data between localStorage (permanent across browser restarts) and sessionStorage (isolated per tab, survives F5 reload, but perishes once the tab is closed).
 
 ---
